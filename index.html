@@ -1,12 +1,241 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Dashboard interactivo para gestión de finanzas personales"
+    />
     <title>Finance Dashboard | Gestión de Finanzas Personales</title>
-</head>
-<body>
-    <h1>Hello, World!</h1>
-    <footer class="footer"></footer>
-</body>
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <div class="logo-icon">$</div>
+          <span>Finance Dashboard</span>
+        </div>
+
+        <div class="header-actions">
+          <button
+            class="btn btn-secondary btn-icon"
+            id="exportBtn"
+            title="Exportar datos"
+          >
+            📊
+          </button>
+          <button
+            class="btn btn-secondary btn-icon"
+            id="themeToggle"
+            title="Cambiar tema"
+          >
+            🌙
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <div class="container">
+      <!-- Panel de Kpis -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Ingresos del mes</div>
+          <div class="kpi-value positive" id="totalIncome">$0.00</div>
+          <div class="kpi-change">---</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Gastos del mes</div>
+          <div class="kpi-value negative" id="totalExpenses">$0.00</div>
+          <div class="kpi-change">---</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Balance neto</div>
+          <div class="kpi-value" id="netBalance">$0.00</div>
+          <div class="kpi-change">---</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Tasa de ahorro</div>
+          <div class="kpi-value" id="savingsRate">0%</div>
+          <div class="kpi-change">Del total de ingresos</div>
+        </div>
+      </div>
+
+      <!-- Gráficos -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h2 class="chart-title">Evolución del Balance</h2>
+          </div>
+          <div class="chart-container">
+            <canvas id="lineChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header">
+            <h2 class="chart-title">Gastos por Categoría</h2>
+          </div>
+          <div class="chart-container">
+            <canvas id="barChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección de transacciones -->
+      <div class="transactions-section">
+        <div class="section-header">
+          <h2 class="section-title">Transacciones Recientes</h2>
+          <div style="display: flex; gap: var(--spacing-md)">
+            <button class="btn btn-secondary" id="importBtn">
+              📥 Importar
+            </button>
+            <button class="btn btn-primary" id="addTransactionBtn">
+              ➕ Nueva Transacción
+            </button>
+          </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters">
+          <div class="filter-group">
+            <label class="filter-label" for="filterType">Tipo</label>
+            <select class="select" id="filterType">
+              <option value="">Todos</option>
+              <option value="ingreso">Ingresos</option>
+              <option value="gasto">Gastos</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label" for="filterCategory">Categoría</label>
+            <select class="select" id="filterCategory">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label" for="filterDateFrom">Desde</label>
+            <input type="date" class="input" id="filterDateFrom" />
+          </div>
+          <div class="filter-group">
+            <label class="filter-label" for="filterDateTo">Hasta</label>
+            <input type="date" class="input" id="filterDateTo" />
+          </div>
+          <div class="filter-group" style="align-self: flex-end">
+            <button class="btn btn-ghost" id="resetFilters">
+              Limpiar filtros
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista de transacciones -->
+        <div id="transactionsContainer">
+          <!-- Se llena dinámicamente -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para agregar/editar transacción -->
+    <div class="modal-overlay hidden" id="transactionModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 class="modal-title" id="modalTitle">Nueva Transacción</h3>
+          <button class="btn btn-ghost btn-icon" id="closeModal">✕</button>
+        </div>
+        <div class="modal-body">
+          <form id="transactionForm">
+            <input type="hidden" id="transactionId" />
+
+            <div class="form-group">
+              <label class="form-label required" for="tipo">Tipo</label>
+              <select class="select" id="tipo" required>
+                <option value="">Seleccionar...</option>
+                <option value="ingreso">Ingreso</option>
+                <option value="gasto">Gasto</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required" for="categoria"
+                >Categoría</label
+              >
+              <select class="select" id="categoria" required>
+                <option value="">Seleccionar...</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required" for="monto">Monto</label>
+              <input
+                type="number"
+                class="input"
+                id="monto"
+                step="0.01"
+                min="0.01"
+                placeholder="0.00"
+                required
+              />
+              <div class="form-hint">
+                Ingresa el monto sin el símbolo de moneda
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required" for="fecha">Fecha</label>
+              <input type="date" class="input" id="fecha" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="descripcion">Descripción</label>
+              <input
+                type="text"
+                class="input"
+                id="descripcion"
+                maxlength="200"
+                placeholder="Ej: Compra de supermercado"
+              />
+              <div class="form-hint">Opcional, máximo 200 caracteres</div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelBtn">Cancelar</button>
+          <button class="btn btn-primary" id="saveBtn">Guardar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de confirmación para eliminar -->
+    <div class="modal-overlay hidden" id="deleteModal">
+      <div class="modal" style="max-width: 400px">
+        <div class="modal-header">
+          <h3 class="modal-title">Confirmar Eliminación</h3>
+          <button class="btn btn-ghost btn-icon" id="closeDeleteModal">
+            ✕
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            ¿Estás seguro de que deseas eliminar esta transacción? Esta acción
+            no se puede deshacer.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelDeleteBtn">
+            Cancelar
+          </button>
+          <button class="btn btn-danger" id="confirmDeleteBtn">Eliminar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón flotante (alternativa al botón del header) -->
+    <button class="fab" id="fabBtn" title="Nueva transacción">➕</button>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- JavaScript principal -->
+  </body>
 </html>

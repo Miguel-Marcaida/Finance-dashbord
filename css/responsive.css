@@ -1,17 +1,15 @@
 /* ============================================
-   RESPONSIVE (media queries)
+   RESPONSIVE - Media queries
    ============================================ */
+
+/* ===== TABLET Y MÓVIL (max-width: 768px) ===== */
 @media (max-width: 768px) {
   .container {
     padding: var(--spacing-md);
   }
 
-  .kpi-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .charts-grid {
-    grid-template-columns: 1fr;
+  .header {
+    padding: var(--spacing-md);
   }
 
   .header-content {
@@ -19,14 +17,46 @@
     align-items: flex-start;
   }
 
+  .logo {
+    font-size: var(--text-xl);
+  }
+
+  /* KPIs en columna única */
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi-value {
+    font-size: var(--text-3xl);
+  }
+
+  /* Gráficos en columna única */
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-container {
+    height: 250px;
+  }
+
+  /* Filtros en columna */
   .filters {
     flex-direction: column;
     width: 100%;
   }
 
-  .fab {
-    bottom: var(--spacing-lg);
-    right: var(--spacing-lg);
+  .filter-group {
+    width: 100%;
+  }
+
+  /* Transacciones */
+  .transactions-section {
+    padding: var(--spacing-md);
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .transaction-item {
@@ -35,23 +65,188 @@
     gap: var(--spacing-sm);
   }
 
+  .transaction-info {
+    width: 100%;
+  }
+
+  .transaction-amount {
+    align-self: flex-start;
+  }
+
   .transaction-actions {
     width: 100%;
     justify-content: flex-end;
   }
+
+  /* Botón flotante */
+  .fab {
+    bottom: var(--spacing-lg);
+    right: var(--spacing-lg);
+    width: 56px;
+    height: 56px;
+  }
+
+  /* Modal */
+  .modal {
+    max-width: 95%;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+  }
+
+  /* Toast */
+  .toast {
+    left: var(--spacing-md);
+    right: var(--spacing-md);
+    bottom: var(--spacing-md);
+    max-width: none;
+  }
 }
 
+/* ===== MÓVIL PEQUEÑO (max-width: 640px) ===== */
 @media (max-width: 640px) {
-  .chart-container {
-    height: 250px;
+  .header-content {
+    gap: var(--spacing-md);
+  }
+
+  .logo {
+    font-size: var(--text-lg);
+  }
+
+  .logo-icon {
+    width: 28px;
+    height: 28px;
+    font-size: var(--text-sm);
+  }
+
+  .kpi-card {
+    padding: var(--spacing-md);
   }
 
   .kpi-value {
-    font-size: 1.5rem;
+    font-size: var(--text-2xl);
   }
 
-  .section-header {
+  .chart-card {
+    padding: var(--spacing-md);
+  }
+
+  .chart-container {
+    height: 220px;
+  }
+
+  .section-title {
+    font-size: var(--text-xl);
+  }
+
+  .transaction-meta {
     flex-direction: column;
-    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+
+  .empty-state {
+    padding: var(--spacing-lg);
+  }
+
+  .empty-state-icon {
+    font-size: 3rem;
+  }
+
+  /* Botones más pequeños en móvil */
+  .btn {
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: var(--text-xs);
+  }
+
+  .btn-icon {
+    padding: var(--spacing-xs);
+  }
+
+  .fab {
+    width: 50px;
+    height: 50px;
+    font-size: var(--text-xl);
+  }
+}
+
+/* ===== DESKTOP GRANDE (min-width: 1400px) ===== */
+@media (min-width: 1400px) {
+  .kpi-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .charts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .chart-container {
+    height: 350px;
+  }
+}
+
+/* ===== LANDSCAPE MÓVIL ===== */
+@media (max-height: 600px) and (orientation: landscape) {
+  .modal {
+    max-height: 85vh;
+  }
+
+  .transactions-list {
+    max-height: 300px;
+  }
+
+  .fab {
+    width: 50px;
+    height: 50px;
+    bottom: var(--spacing-md);
+    right: var(--spacing-md);
+  }
+}
+
+/* ===== PREFERENCIAS DE MOVIMIENTO REDUCIDO ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== IMPRESIÓN ===== */
+@media print {
+  .header-actions,
+  .fab,
+  .btn,
+  .filters,
+  .transaction-actions,
+  .modal-overlay {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+  }
+
+  .container {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .kpi-card,
+  .chart-card,
+  .transactions-section {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
+  }
+
+  .chart-container {
+    height: auto;
   }
 }
